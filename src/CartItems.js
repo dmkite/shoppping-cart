@@ -13,7 +13,12 @@ function CartItems(props){
                         <div className="col-md-2">Quantity</div>
                     </div>
                 </div>
-                {props.cartItemsList.map(({product:{name, priceInCents}, quantity}) => <CartItem name={name} priceInCents={priceInCents} quantity={quantity} /> )}
+                {props.cartItemsList.map(({product:{name, priceInCents}, quantity, id}) => <CartItem 
+                        key={id} 
+                        name={name} 
+                        priceInCents={priceInCents} 
+                        quantity={quantity} 
+                />)}
             </div>
         </div>
     )

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import CartHeader from './CartHeader'
 import CartFooter from './CartFooter'
@@ -28,46 +27,43 @@ class App extends Component {
       ]
     }
   }
+
+  addItemToCart = (product, quantity) => {
+
+    if(!quantity || product === 'Select an option...') return false
+    
+    const {id, name, priceInCents} = this.state.products.find(item => item.name === product)
+    
+    const newCartItemsList = this.state.cartItemsList.reduce((acc, item) => {
+      if(item.product.name === product) item.quantity += Number(quantity)
+      acc.push(item)
+      return acc
+    }, [])
+    
+    const itemInCart = newCartItemsList.find(item => item.product.name === product)
+
+    if(!itemInCart){
+      const newCartItem = {
+        product: { id, name, priceInCents },
+        quantity
+      }
+      newCartItemsList.push(newCartItem)
+    } 
+    
+    this.setState({
+      cartItemsList: newCartItemsList
+    })
+  }
+  
   render() {
     return (
       <div>
         <CartHeader/>
         <CartItems cartItemsList={this.state.cartItemsList}/>
-        <AddItem products={this.state.products} handleClick={this.handleClick}/>
+        <AddItem products={this.state.products} addItemToCart={this.addItemToCart}/>
         <CartFooter copyright="2016"/>
       </div>
       )
-  }
-
-  handleClick = (e) => {
-    e.preventDefault()
-    let product = e.target.parentElement.children[1].children[1].value
-    let quantity = e.target.parentElement.children[0].children[1].value
-    
-    if(!quantity || product === 'Select an option...') return false
-
-    const {id, name, priceInCents} = this.state.products.filter(item => item.name === product)[0]
-
-    const newCartItem = {
-      product: {id, name, priceInCents},
-      quantity
-    }
-    const productInCart = !!this.state.cartItemsList.filter(item => item.product.name === product)[0]
-    const newCartItemsList = this.state.cartItemsList
-    console.log(productInCart)
-    if (productInCart){
-      newCartItemsList.forEach(item => {
-        if(item.product.name === product) item.quantity += Number(quantity)
-      }) 
-    }
-    else{
-      newCartItemsList.push(newCartItem)
-    }
-    e.target.parentElement.children[1].children[1].value = 'Select an option...'
-    e.target.parentElement.children[0].children[1].value = ''
-    this.setState({
-      cartItemsList: newCartItemsList
-    })
   }
 }
 
